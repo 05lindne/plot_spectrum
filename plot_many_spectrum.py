@@ -12,6 +12,8 @@ import argparse
 import filename_handling
 from matplotlib import colors as col
 import matplotlib.cm as cm
+from matplotlib.mlab import griddata
+from mpl_toolkits.mplot3d import Axes3D
 
 # get arguments from command line
 parser = argparse.ArgumentParser()
@@ -30,19 +32,29 @@ def main():
 	# read data
 	xdata = []
 	ydata = []
-	for item in args.in_file:
+	zdata = []
+	for index, item in enumerate(args.in_file):
 		in_x, in_y = np.loadtxt( item, delimiter = " ", unpack = True )
+		in_z = [index for item in in_x]
 		xdata.append( in_x )
 		ydata.append( in_y )
+		zdata.append( in_z )
 
+	print zdata
 	print "...plotting..."
 
-	ax = plt.subplot( 111 )
-
+	# ax = plt.subplot( 111 )
+	fig = plt.figure()
+	ax = fig.add_subplot(111,projection='3d')
 	cmap = plt.get_cmap("hsv", len(args.in_file))
 
-	for index, ( itemx, itemy ) in enumerate( zip( xdata, ydata ) ):
-		plt.plot( itemx, itemy, linestyle = "-", color = cmap(index), marker = '.', markersize = 4 )
+	# for index, ( itemx, itemy ) in enumerate( zip( xdata, ydata ) ):
+	# 	plt.plot( itemx, itemy, linestyle = "-", color = cmap(index), marker = '.', markersize = 4 )	
+
+
+
+	for ( itemx, itemy, itemz ) in zip( xdata, ydata, zdata ):
+		plt.scatter( itemx, itemy, itemz )
 
 
 	# aestectic cosmetics
@@ -61,6 +73,7 @@ def main():
 
 	plt.tight_layout() # suppress chopping off labels
 
+	plt.show()
 	print "... saving figures...."
 
 	plt.savefig( args.out +'.pdf' )
@@ -69,7 +82,6 @@ def main():
 	pickle.dump(ax, file( ( args.out +'.pickle' ), 'w') )
 	# pickle.dump(ax, file(( filename_handling.pathname( args.out ) + "/" + args.out +'.pickle'), 'w'))
 
-	plt.show()
 
 	print "...done."
 
