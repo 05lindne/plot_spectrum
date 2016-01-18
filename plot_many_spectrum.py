@@ -12,8 +12,6 @@ import argparse
 import filename_handling
 from matplotlib import colors as col
 import matplotlib.cm as cm
-from mpl_toolkits.mplot3d import Axes3D
-from mpl_toolkits import mplot3d
 
 # get arguments from command line
 parser = argparse.ArgumentParser()
@@ -39,17 +37,12 @@ def main():
 
 	print "...plotting..."
 
+	ax = plt.subplot( 111 )
 
-	fig = plt.figure()
-	ax = fig.add_subplot(111,projection='3d')
-	# fig = plt.subplot( 111 )
-	# ax = fig.gca(projection='3d')
 	cmap = plt.get_cmap("hsv", len(args.in_file))
-	stepz = np.arange(1, len(args.in_file)+1 , 1)
-	print stepz
+
 	for index, ( itemx, itemy ) in enumerate( zip( xdata, ydata ) ):
-		# plt.plot( itemx, itemy, stepz, linestyle = "-", color = cmap(index), marker = '.', markersize = 4 )
-		ax.scatter3D( itemx, itemy, index )
+		plt.plot( itemx, itemy, linestyle = "-", color = cmap(index), marker = '.', markersize = 4 )
 
 
 	# aestectic cosmetics
@@ -68,9 +61,6 @@ def main():
 
 	plt.tight_layout() # suppress chopping off labels
 
-	
-	
-	# plt.show()
 	print "... saving figures...."
 
 	plt.savefig( args.out +'.pdf' )
@@ -79,7 +69,7 @@ def main():
 	pickle.dump(ax, file( ( args.out +'.pickle' ), 'w') )
 	# pickle.dump(ax, file(( filename_handling.pathname( args.out ) + "/" + args.out +'.pickle'), 'w'))
 
-	# plt.show()
+	plt.show()
 
 	print "...done."
 
